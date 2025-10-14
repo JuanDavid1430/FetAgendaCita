@@ -1,0 +1,184 @@
+<div class="reserva-container">
+  <div class="reserva-header">
+    <h1 class="reserva-title">�‍♀️ Agenda tu Cita en StyleCut</h1>
+    <p class="reserva-subtitle">Selecciona el servicio, fecha y hora que mejor te convenga. ¡Es rápido y fácil!</p>
+  </div>
+
+    <!-- Success Message -->
+  <div *ngIf="success" class="alert alert-success">
+    <h3>✅ ¡Tu Cita ha sido Agendada!</h3>
+    <p>Nos vemos pronto en StyleCut. Te hemos enviado un correo con todos los detalles de tu cita. ¡Prepárate para lucir increíble! 💇‍♀️✨</p>
+  </div>  <!-- Error Message -->
+  <div *ngIf="error && !success" class="alert alert-error">
+    {{ error }}
+  </div>
+
+  <!-- Formulario -->
+  <form [formGroup]="reservaForm" (ngSubmit)="onSubmit()" *ngIf="!success" class="reserva-form">
+    
+    <!-- Paso 1: Seleccionar Servicio -->
+    <div class="form-section">
+      <h2 class="section-title">1️⃣ ¿Qué Servicio de Belleza Deseas?</h2>
+      
+      <div class="servicios-grid">
+        <div *ngFor="let servicio of servicios" 
+             class="servicio-card"
+             [class.selected]="reservaForm.get('servicio_id')?.value == servicio.id"
+             (click)="reservaForm.patchValue({ servicio_id: servicio.id })">
+          <input type="radio" 
+                 [value]="servicio.id" 
+                 formControlName="servicio_id"
+                 [id]="'servicio-' + servicio.id"
+                 class="hidden-radio">
+          <label [for]="'servicio-' + servicio.id" class="servicio-label">
+            <h3>{{ servicio.nombre }}</h3>
+            <p class="servicio-descripcion">{{ servicio.descripcion }}</p>
+            <div class="servicio-details">
+              <span class="servicio-duracion">⏱️ {{ servicio.duracion }} min</span>
+              <span class="servicio-precio">${{ servicio.precio }}</span>
+            </div>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Paso 2: Seleccionar Fecha -->
+    <div class="form-section" *ngIf="reservaForm.get('servicio_id')?.value">
+      <h2 class="section-title">2️⃣ ¿Qué Día Te Gustaría Venir?</h2>
+      
+      <div class="fechas-scroll">
+        <div *ngFor="let dia of diasDisponibles" 
+             class="fecha-card"
+             [class.selected]="reservaForm.get('fecha')?.value === formatearFecha(dia)"
+             (click)="reservaForm.patchValue({ fecha: formatearFecha(dia) })">
+          <input type="radio" 
+                 [value]="formatearFecha(dia)" 
+                 formControlName="fecha"
+                 [id]="'fecha-' + formatearFecha(dia)"
+                 class="hidden-radio">
+          <label [for]="'fecha-' + formatearFecha(dia)" class="fecha-label">
+            <span class="fecha-dia-nombre">{{ obtenerNombreDia(dia) }}</span>
+            <span class="fecha-numero">{{ dia.getDate() }}</span>
+            <span class="fecha-mes">{{ obtenerNombreMes(dia) }}</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Paso 3: Seleccionar Hora -->
+    <div class="form-section" *ngIf="reservaForm.get('fecha')?.value">
+      <h2 class="section-title">3️⃣ ¿A Qué Hora Prefieres tu Cita?</h2>
+      
+      <div *ngIf="loading" class="loading">
+        <div class="spinner"></div>
+        <p>Verificando disponibilidad...</p>
+      </div>
+      
+      <div *ngIf="!loading && horariosDisponibles.length > 0" class="horarios-grid">
+        <div *ngFor="let hora of horariosDisponibles" 
+             class="horario-card"
+             [class.selected]="reservaForm.get('hora')?.value === hora"
+             (click)="reservaForm.patchValue({ hora: hora })">
+          <input type="radio" 
+                 [value]="hora" 
+                 formControlName="hora"
+                 [id]="'hora-' + hora"
+                 class="hidden-radio">
+          <label [for]="'hora-' + hora" class="horario-label">
+            🕐 {{ hora }}
+          </label>
+        </div>
+      </div>
+
+      <div *ngIf="!loading && horariosDisponibles.length === 0 && reservaForm.get('fecha')?.value" 
+           class="no-horarios">
+        😔 Lo sentimos, no hay horarios disponibles para este día. Por favor selecciona otra fecha.
+      </div>
+    </div>
+
+    <!-- Paso 4: Datos del Cliente -->
+    <div class="form-section" *ngIf="reservaForm.get('hora')?.value">
+      <h2 class="section-title">4️⃣ Tus Datos</h2>
+      
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="nombre">Nombre Completo *</label>
+          <input type="text" 
+                 id="nombre" 
+                 formControlName="nombre_cliente"
+                 placeholder="Ej: Juan Pérez"
+                 class="form-control">
+          <span *ngIf="reservaForm.get('nombre_cliente')?.invalid && reservaForm.get('nombre_cliente')?.touched" 
+                class="error-text">
+            El nombre debe tener al menos 3 caracteres
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Correo Electrónico *</label>
+          <input type="email" 
+                 id="email" 
+                 formControlName="email_cliente"
+                 placeholder="ejemplo@correo.com"
+                 class="form-control">
+          <span *ngIf="reservaForm.get('email_cliente')?.invalid && reservaForm.get('email_cliente')?.touched" 
+                class="error-text">
+            Ingresa un correo válido
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label for="telefono">Teléfono *</label>
+          <input type="tel" 
+                 id="telefono" 
+                 formControlName="telefono_cliente"
+                 placeholder="1234567890"
+                 maxlength="10"
+                 class="form-control">
+          <span *ngIf="reservaForm.get('telefono_cliente')?.invalid && reservaForm.get('telefono_cliente')?.touched" 
+                class="error-text">
+            Ingresa 10 dígitos sin guiones
+          </span>
+        </div>
+
+        <div class="form-group full-width">
+          <label for="comentarios">Comentarios (Opcional)</label>
+          <textarea id="comentarios" 
+                    formControlName="comentarios"
+                    placeholder="Alguna nota o comentario adicional..."
+                    rows="3"
+                    class="form-control"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resumen y Botón -->
+    <div class="form-section" *ngIf="reservaForm.get('hora')?.value">
+      <div class="resumen-box">
+        <h3>�‍♀️ Resumen de tu Cita</h3>
+        <div class="resumen-item">
+          <strong>Servicio:</strong> {{ servicioSeleccionado?.nombre }}
+        </div>
+        <div class="resumen-item">
+          <strong>Fecha:</strong> {{ reservaForm.get('fecha')?.value }}
+        </div>
+        <div class="resumen-item">
+          <strong>Hora:</strong> {{ reservaForm.get('hora')?.value }}
+        </div>
+        <div class="resumen-item">
+                    <p><strong>Duración:</strong> {{ servicioSeleccionado?.duracion }} minutos</p>
+        </div>
+        <div class="resumen-item precio">
+          <strong>Precio:</strong> ${{ servicioSeleccionado?.precio }}
+        </div>
+      </div>
+
+      <button type="submit" 
+              class="btn-submit"
+              [disabled]="reservaForm.invalid || loading">
+        <span *ngIf="!loading">✨ Confirmar mi Cita</span>
+        <span *ngIf="loading">⏳ Agendando...</span>
+      </button>
+    </div>
+  </form>
+</div>

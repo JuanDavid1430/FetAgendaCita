@@ -1,0 +1,66 @@
+<div class="servicios-container">
+  <div class="header">
+    <h1 class="title">Nuestros Servicios</h1>
+    <p class="subtitle">
+      Elige el servicio que necesitas y agenda tu cita de forma rápida y sencilla
+    </p>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Cargando servicios...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error" class="error-message">
+    <span class="error-icon">⚠️</span>
+    <p>{{ error }}</p>
+  </div>
+
+  <!-- Servicios Grid -->
+  <div *ngIf="!loading && !error" class="servicios-grid">
+    <div class="servicio-card" *ngFor="let servicio of servicios">
+      <div class="servicio-icon">
+        {{ servicio.nombre.includes('Corte') ? '✂️' : 
+           servicio.nombre.includes('Consulta') ? '🩺' : 
+           servicio.nombre.includes('Masaje') ? '💆' : 
+           servicio.nombre.includes('Facial') ? '🧖' : '⭐' }}
+      </div>
+      <h3 class="servicio-nombre">{{ servicio.nombre }}</h3>
+      <p class="servicio-descripcion">{{ servicio.descripcion }}</p>
+      
+      <div class="servicio-detalles">
+        <div class="detalle">
+          <span class="detalle-icon">⏱️</span>
+          <span class="detalle-texto">{{ servicio.duracion }} min</span>
+        </div>
+        <div class="detalle" *ngIf="servicio.precio">
+          <span class="detalle-icon">💰</span>
+          <span class="detalle-texto">${{ servicio.precio }}</span>
+        </div>
+      </div>
+
+      <a [routerLink]="['/reservar']" [queryParams]="{servicio: servicio.id}" class="btn-reservar">
+        Reservar Ahora
+      </a>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && !error && servicios.length === 0" class="empty-state">
+    <div class="empty-icon">📭</div>
+    <h3>No hay servicios disponibles</h3>
+    <p>Por favor, vuelve más tarde</p>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-section" *ngIf="!loading && servicios.length > 0">
+    <h2>¿Listo para reservar?</h2>
+    <p>Selecciona un servicio y elige el horario que mejor se adapte a ti</p>
+    <a routerLink="/reservar" class="btn-cta">
+      <span class="btn-icon">📅</span>
+      Ir al Calendario
+    </a>
+  </div>
+</div>

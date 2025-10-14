@@ -1,0 +1,58 @@
+<nav class="navbar">
+  <div class="navbar-container">
+    <!-- Logo y menú en la misma línea -->
+    <a routerLink="/" class="navbar-logo">
+      <span class="logo-icon">✂️</span>
+      <span class="logo-text">StyleCut</span>
+    </a>
+
+    <div class="navbar-menu">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-text">Inicio</span>
+      </a>
+      <a routerLink="/servicios" routerLinkActive="active" class="nav-link">
+        <span class="nav-icon">✂️</span>
+        <span class="nav-text">Servicios</span>
+      </a>
+      <a routerLink="/reservar" routerLinkActive="active" class="nav-link nav-cta">
+        <span class="nav-icon">📅</span>
+        <span class="nav-text">Agendar Cita</span>
+      </a>
+
+      <!-- Admin Menu -->
+      <ng-container *ngIf="currentUser">
+        <div class="nav-divider"></div>
+        <a routerLink="/admin/dashboard" routerLinkActive="active" class="nav-link nav-admin">
+          <span class="nav-icon">📊</span>
+          <span class="nav-text">Dashboard</span>
+        </a>
+        <a routerLink="/admin/reservas" routerLinkActive="active" class="nav-link nav-admin">
+          <span class="nav-icon">📋</span>
+          <span class="nav-text">Citas</span>
+        </a>
+        <a routerLink="/admin/servicios" routerLinkActive="active" class="nav-link nav-admin">
+          <span class="nav-icon">🛍️</span>
+          <span class="nav-text">Servicios</span>
+        </a>
+        <a routerLink="/admin/configuracion/horarios" routerLinkActive="active" class="nav-link nav-admin">
+          <span class="nav-icon">⚙️</span>
+          <span class="nav-text">Config</span>
+        </a>
+        <button (click)="logout()" class="nav-link nav-logout">
+          <span class="nav-icon">🚪</span>
+          <span class="nav-text">Salir</span>
+        </button>
+      </ng-container>
+
+      <!-- Login Link -->
+      <ng-container *ngIf="!currentUser">
+        <div class="nav-divider"></div>
+        <a routerLink="/admin/login" routerLinkActive="active" class="nav-link nav-login">
+          <span class="nav-icon">🔐</span>
+          <span class="nav-text">Admin</span>
+        </a>
+      </ng-container>
+    </div>
+  </div>
+</nav>

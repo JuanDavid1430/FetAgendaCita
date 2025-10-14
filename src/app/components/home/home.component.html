@@ -1,0 +1,81 @@
+<div class="home-container">
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1 class="hero-title">
+        <span class="gradient-text">Agenda tu Cita</span>
+        <br>
+        de Forma Simple y Rápida
+      </h1>
+      <p class="hero-subtitle">
+        Sistema de reservas online diseñado para tu comodidad.
+        Selecciona el servicio que necesitas y agenda tu cita en minutos.
+      </p>
+      <div class="hero-buttons">
+        <a routerLink="/reservar" class="btn btn-primary btn-large">
+          <span class="btn-icon">📅</span>
+          Reservar Ahora
+        </a>
+        <a routerLink="/servicios" class="btn btn-secondary btn-large">
+          <span class="btn-icon">🛍️</span>
+          Ver Servicios
+        </a>
+      </div>
+    </div>
+    <div class="hero-image">
+      <div class="calendar-illustration">
+        📅
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features">
+    <h2 class="section-title">¿Por qué elegirnos?</h2>
+    <div class="features-grid">
+      <div class="feature-card" *ngFor="let feature of features">
+        <div class="feature-icon">{{ feature.icon }}</div>
+        <h3 class="feature-title">{{ feature.title }}</h3>
+        <p class="feature-description">{{ feature.description }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <div class="cta-content">
+      <h2 class="cta-title">¿Listo para agendar tu cita?</h2>
+      <p class="cta-text">
+        Únete a cientos de clientes satisfechos que ya disfrutan de nuestro
+        sistema de reservas online.
+      </p>
+      <a routerLink="/reservar" class="btn btn-white btn-large">
+        Comenzar Ahora
+      </a>
+    </div>
+  </section>
+
+  <!-- Info Section -->
+  <section class="info-section">
+    <div class="info-grid">
+      <div class="info-card">
+        <h3>📞 Contáctanos</h3>
+        <p>¿Tienes dudas sobre nuestros servicios?</p>
+        <p class="contact-info">Tel: (555) 987-6543</p>
+        <p class="contact-info">Email: info&#64;stylecut.com</p>
+      </div>
+      <div class="info-card">
+        <h3>🕐 Horarios del Salón</h3>
+        <p>Abierto toda la semana</p>
+        <p class="contact-info">Lunes - Viernes: 9:00 AM - 7:00 PM</p>
+        <p class="contact-info">Sábados: 9:00 AM - 6:00 PM</p>
+      </div>
+      <div class="info-card">
+        <h3>📍 Visítanos</h3>
+        <p>Estamos en el centro de la ciudad</p>
+        <p class="contact-info">Av. Belleza #456, Plaza Fashion</p>
+        <p class="contact-info">Col. Centro, CP 54000</p>
+      </div>
+    </div>
+  </section>
+</div>
