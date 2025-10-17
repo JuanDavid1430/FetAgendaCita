@@ -4,42 +4,83 @@ const Servicio = require('../models/Servicio');
 const nodemailer = require('nodemailer');
 require('dotenv').config();
 
-// Configurar transporter de email
-const transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST,
-    port: process.env.EMAIL_PORT,
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASSWORD
-    }
-});
-
 // Función para enviar email de confirmación
 const enviarEmailConfirmacion = async (reserva, cliente, servicio) => {
     try {
+        // Configurar transporter cada vez que se necesite
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASSWORD
+            }
+        });
+
+        console.log('📧 Enviando email a:', cliente.email);
+        console.log('🔧 Usando EMAIL_USER:', process.env.EMAIL_USER);
+        console.log('🔑 EMAIL_PASSWORD configurada:', process.env.EMAIL_PASSWORD ? 'Sí' : 'No');
         const mailOptions = {
             from: process.env.EMAIL_FROM,
             to: cliente.email,
-            subject: 'Confirmación de Reserva - FetAgenda',
+            subject: '✨ Confirmación de Reserva - StyleCut',
             html: `
-                <h2>Confirmación de Reserva</h2>
-                <p>Hola ${cliente.nombre},</p>
-                <p>Tu reserva ha sido confirmada con los siguientes detalles:</p>
-                <ul>
-                    <li><strong>Servicio:</strong> ${servicio.nombre}</li>
-                    <li><strong>Fecha:</strong> ${reserva.fecha}</li>
-                    <li><strong>Hora:</strong> ${reserva.hora_inicio}</li>
-                    <li><strong>Duración:</strong> ${servicio.duracion} minutos</li>
-                    <li><strong>Precio:</strong> $${servicio.precio}</li>
-                </ul>
-                <p>Si necesitas cancelar o modificar tu reserva, por favor contáctanos.</p>
-                <p>¡Te esperamos!</p>
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #f8f9fa;">
+                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 2rem; text-align: center;">
+                        <h1 style="color: white; margin: 0; font-size: 2rem;">💇‍♀️ StyleCut</h1>
+                        <p style="color: white; margin: 0.5rem 0 0; opacity: 0.9;">Tu cita ha sido confirmada</p>
+                    </div>
+                    
+                    <div style="background: white; padding: 2rem;">
+                        <h2 style="color: #2d3748; margin-bottom: 1rem;">¡Hola ${cliente.nombre}! 👋</h2>
+                        <p style="color: #718096; line-height: 1.6;">Tu reserva ha sido confirmada exitosamente. Aquí tienes todos los detalles:</p>
+                        
+                        <div style="background: #f7fafc; padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0;">
+                            <h3 style="color: #2d3748; margin-top: 0;">📋 Detalles de tu Cita</h3>
+                            <ul style="list-style: none; padding: 0;">
+                                <li style="margin: 0.75rem 0; color: #4a5568;">
+                                    <strong style="color: #2d3748;">💇‍♀️ Servicio:</strong> ${servicio.nombre}
+                                </li>
+                                <li style="margin: 0.75rem 0; color: #4a5568;">
+                                    <strong style="color: #2d3748;">📅 Fecha:</strong> ${reserva.fecha}
+                                </li>
+                                <li style="margin: 0.75rem 0; color: #4a5568;">
+                                    <strong style="color: #2d3748;">🕐 Hora:</strong> ${reserva.hora_inicio}
+                                </li>
+                                <li style="margin: 0.75rem 0; color: #4a5568;">
+                                    <strong style="color: #2d3748;">⏱️ Duración:</strong> ${servicio.duracion} minutos
+                                </li>
+                                <li style="margin: 0.75rem 0; color: #4a5568;">
+                                    <strong style="color: #2d3748;">💰 Precio:</strong> $${servicio.precio}
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div style="background: #e6fffa; border-left: 4px solid #38b2ac; padding: 1rem; margin: 1.5rem 0;">
+                            <p style="margin: 0; color: #234e52;">
+                                <strong>💡 Importante:</strong> Si necesitas cancelar o modificar tu reserva, 
+                                por favor contáctanos con al menos 24 horas de anticipación.
+                            </p>
+                        </div>
+                        
+                        <p style="color: #718096; text-align: center; margin: 2rem 0;">
+                            ¡Te esperamos para que luzcas increíble! ✨
+                        </p>
+                    </div>
+                    
+                    <div style="background: #2d3748; padding: 1rem; text-align: center;">
+                        <p style="color: #a0aec0; margin: 0; font-size: 0.9rem;">
+                            © 2025 StyleCut - Sistema de Reservas FetAgenda
+                        </p>
+                    </div>
+                </div>
             `
         };
 
         await transporter.sendMail(mailOptions);
+        console.log(`✅ Email enviado exitosamente a: ${cliente.email}`);
     } catch (error) {
-        console.error('Error al enviar email:', error);
+        console.error('❌ Error al enviar email:', error);
+        console.error(`📧 Email fallido para: ${cliente.email}`);
     }
 };
 

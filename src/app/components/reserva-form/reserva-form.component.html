@@ -1,16 +1,20 @@
 <div class="reserva-container">
   <div class="reserva-header">
-    <h1 class="reserva-title">�‍♀️ Agenda tu Cita en StyleCut</h1>
+    <h1 class="reserva-title">💇‍♀️ Agenda tu Cita en StyleCut</h1>
     <p class="reserva-subtitle">Selecciona el servicio, fecha y hora que mejor te convenga. ¡Es rápido y fácil!</p>
   </div>
 
-    <!-- Success Message -->
+  <!-- Success Message -->
   <div *ngIf="success" class="alert alert-success">
-    <h3>✅ ¡Tu Cita ha sido Agendada!</h3>
+    <div class="success-icon">✅</div>
+    <h3>¡Tu Cita ha sido Agendada!</h3>
     <p>Nos vemos pronto en StyleCut. Te hemos enviado un correo con todos los detalles de tu cita. ¡Prepárate para lucir increíble! 💇‍♀️✨</p>
-  </div>  <!-- Error Message -->
+  </div>
+
+  <!-- Error Message -->
   <div *ngIf="error && !success" class="alert alert-error">
-    {{ error }}
+    <div class="error-icon">⚠️</div>
+    <p>{{ error }}</p>
   </div>
 
   <!-- Formulario -->
@@ -18,7 +22,10 @@
     
     <!-- Paso 1: Seleccionar Servicio -->
     <div class="form-section">
-      <h2 class="section-title">1️⃣ ¿Qué Servicio de Belleza Deseas?</h2>
+      <div class="section-header">
+        <div class="step-number">1</div>
+        <h2 class="section-title">✨ ¿Qué Servicio de Belleza Deseas?</h2>
+      </div>
       
       <div class="servicios-grid">
         <div *ngFor="let servicio of servicios" 
@@ -31,6 +38,7 @@
                  [id]="'servicio-' + servicio.id"
                  class="hidden-radio">
           <label [for]="'servicio-' + servicio.id" class="servicio-label">
+            <div class="servicio-icon">💇‍♀️</div>
             <h3>{{ servicio.nombre }}</h3>
             <p class="servicio-descripcion">{{ servicio.descripcion }}</p>
             <div class="servicio-details">
@@ -44,7 +52,10 @@
 
     <!-- Paso 2: Seleccionar Fecha -->
     <div class="form-section" *ngIf="reservaForm.get('servicio_id')?.value">
-      <h2 class="section-title">2️⃣ ¿Qué Día Te Gustaría Venir?</h2>
+      <div class="section-header">
+        <div class="step-number">2</div>
+        <h2 class="section-title">📅 ¿Qué Día Te Gustaría Venir?</h2>
+      </div>
       
       <div class="fechas-scroll">
         <div *ngFor="let dia of diasDisponibles" 
@@ -67,7 +78,10 @@
 
     <!-- Paso 3: Seleccionar Hora -->
     <div class="form-section" *ngIf="reservaForm.get('fecha')?.value">
-      <h2 class="section-title">3️⃣ ¿A Qué Hora Prefieres tu Cita?</h2>
+      <div class="section-header">
+        <div class="step-number">3</div>
+        <h2 class="section-title">🕐 ¿A Qué Hora Prefieres tu Cita?</h2>
+      </div>
       
       <div *ngIf="loading" class="loading">
         <div class="spinner"></div>
@@ -92,13 +106,17 @@
 
       <div *ngIf="!loading && horariosDisponibles.length === 0 && reservaForm.get('fecha')?.value" 
            class="no-horarios">
-        😔 Lo sentimos, no hay horarios disponibles para este día. Por favor selecciona otra fecha.
+        <div class="no-horarios-icon">😔</div>
+        <p>Lo sentimos, no hay horarios disponibles para este día. Por favor selecciona otra fecha.</p>
       </div>
     </div>
 
     <!-- Paso 4: Datos del Cliente -->
     <div class="form-section" *ngIf="reservaForm.get('hora')?.value">
-      <h2 class="section-title">4️⃣ Tus Datos</h2>
+      <div class="section-header">
+        <div class="step-number">4</div>
+        <h2 class="section-title">👤 Tus Datos</h2>
+      </div>
       
       <div class="form-grid">
         <div class="form-group">
@@ -155,29 +173,45 @@
     <!-- Resumen y Botón -->
     <div class="form-section" *ngIf="reservaForm.get('hora')?.value">
       <div class="resumen-box">
-        <h3>�‍♀️ Resumen de tu Cita</h3>
-        <div class="resumen-item">
-          <strong>Servicio:</strong> {{ servicioSeleccionado?.nombre }}
+        <div class="resumen-header">
+          <div class="resumen-icon">💇‍♀️</div>
+          <h3>Resumen de tu Cita</h3>
         </div>
-        <div class="resumen-item">
-          <strong>Fecha:</strong> {{ reservaForm.get('fecha')?.value }}
-        </div>
-        <div class="resumen-item">
-          <strong>Hora:</strong> {{ reservaForm.get('hora')?.value }}
-        </div>
-        <div class="resumen-item">
-                    <p><strong>Duración:</strong> {{ servicioSeleccionado?.duracion }} minutos</p>
-        </div>
-        <div class="resumen-item precio">
-          <strong>Precio:</strong> ${{ servicioSeleccionado?.precio }}
+        <div class="resumen-content">
+          <div class="resumen-item">
+            <span class="resumen-label">Servicio:</span>
+            <span class="resumen-value">{{ servicioSeleccionado?.nombre }}</span>
+          </div>
+          <div class="resumen-item">
+            <span class="resumen-label">Fecha:</span>
+            <span class="resumen-value">{{ reservaForm.get('fecha')?.value }}</span>
+          </div>
+          <div class="resumen-item">
+            <span class="resumen-label">Hora:</span>
+            <span class="resumen-value">{{ reservaForm.get('hora')?.value }}</span>
+          </div>
+          <div class="resumen-item">
+            <span class="resumen-label">Duración:</span>
+            <span class="resumen-value">{{ servicioSeleccionado?.duracion }} minutos</span>
+          </div>
+          <div class="resumen-item precio">
+            <span class="resumen-label">Precio:</span>
+            <span class="resumen-value">${{ servicioSeleccionado?.precio }}</span>
+          </div>
         </div>
       </div>
 
       <button type="submit" 
               class="btn-submit"
               [disabled]="reservaForm.invalid || loading">
-        <span *ngIf="!loading">✨ Confirmar mi Cita</span>
-        <span *ngIf="loading">⏳ Agendando...</span>
+        <span *ngIf="!loading" class="btn-content">
+          <span class="btn-icon">✨</span>
+          <span>Confirmar mi Cita</span>
+        </span>
+        <span *ngIf="loading" class="btn-content">
+          <span class="btn-icon">⏳</span>
+          <span>Agendando...</span>
+        </span>
       </button>
     </div>
   </form>

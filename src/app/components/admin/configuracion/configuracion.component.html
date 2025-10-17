@@ -1,0 +1,132 @@
+<div class="configuracion-container">
+  <div class="configuracion-header">
+    <h1 class="configuracion-title">⚙️ Configuración del Sistema</h1>
+    <p class="configuracion-subtitle">Gestiona horarios de trabajo y días bloqueados</p>
+  </div>
+
+  <!-- Navegación de pestañas -->
+  <div class="tabs-navigation">
+    <button class="tab-button active" (click)="mostrarTab = 'horarios'">
+      🕐 Horarios de Trabajo
+    </button>
+    <button class="tab-button" (click)="mostrarTab = 'dias-bloqueados'">
+      🚫 Días Bloqueados
+    </button>
+  </div>
+
+  <!-- Tab: Horarios de Trabajo -->
+  <div *ngIf="mostrarTab === 'horarios'" class="tab-content">
+    <div class="section-header">
+      <h2>🕐 Horarios de Trabajo</h2>
+      <p>Configura los horarios de atención para cada día de la semana</p>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="loadingHorarios" class="loading">
+      <div class="spinner"></div>
+      <p>Cargando horarios...</p>
+    </div>
+
+    <!-- Error -->
+    <div *ngIf="errorHorarios && !loadingHorarios" class="error-message">
+      <span class="error-icon">⚠️</span>
+      {{ errorHorarios }}
+    </div>
+
+    <!-- Lista de Horarios -->
+    <div *ngIf="!loadingHorarios && !errorHorarios" class="horarios-list">
+      <div *ngFor="let horario of horarios" class="horario-card">
+        <div class="horario-info">
+          <h3>{{ obtenerNombreDia(horario.dia_semana) }}</h3>
+          <div class="horario-times">
+            <span class="time-display">{{ horario.hora_inicio }}</span>
+            <span class="time-separator">-</span>
+            <span class="time-display">{{ horario.hora_fin }}</span>
+          </div>
+        </div>
+        
+        <div class="horario-controls">
+          <label class="toggle-switch">
+            <input 
+              type="checkbox" 
+              [checked]="horario.activo"
+              (change)="actualizarHorario(horario.dia_semana, { activo: !horario.activo })">
+            <span class="toggle-slider"></span>
+            <span class="toggle-label">{{ horario.activo ? 'Activo' : 'Inactivo' }}</span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab: Días Bloqueados -->
+  <div *ngIf="mostrarTab === 'dias-bloqueados'" class="tab-content">
+    <div class="section-header">
+      <h2>🚫 Días Bloqueados</h2>
+      <p>Gestiona días específicos donde no se atenderá (feriados, vacaciones, etc.)</p>
+    </div>
+
+    <!-- Formulario para agregar día bloqueado -->
+    <div class="add-day-form">
+      <h3>➕ Agregar Día Bloqueado</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="fecha">Fecha</label>
+          <input 
+            type="date" 
+            id="fecha" 
+            [(ngModel)]="nuevoDiaBloqueado.fecha"
+            class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="motivo">Motivo</label>
+          <input 
+            type="text" 
+            id="motivo" 
+            [(ngModel)]="nuevoDiaBloqueado.motivo"
+            placeholder="Ej: Día de la Independencia"
+            class="form-control">
+        </div>
+        <div class="form-group">
+          <button (click)="agregarDiaBloqueado()" class="btn-agregar">
+            ➕ Agregar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="loadingDias" class="loading">
+      <div class="spinner"></div>
+      <p>Cargando días bloqueados...</p>
+    </div>
+
+    <!-- Error -->
+    <div *ngIf="errorDias && !loadingDias" class="error-message">
+      <span class="error-icon">⚠️</span>
+      {{ errorDias }}
+    </div>
+
+    <!-- Lista de Días Bloqueados -->
+    <div *ngIf="!loadingDias && !errorDias" class="dias-list">
+      <div *ngFor="let dia of diasBloqueados" class="dia-card">
+        <div class="dia-info">
+          <h3>{{ formatearFecha(dia.fecha) }}</h3>
+          <p>{{ dia.motivo }}</p>
+        </div>
+        <div class="dia-actions">
+          <button (click)="eliminarDiaBloqueado(dia.id!)" class="btn-eliminar">
+            🗑️ Eliminar
+          </button>
+        </div>
+      </div>
+
+      <!-- Sin días bloqueados -->
+      <div *ngIf="diasBloqueados.length === 0" class="no-dias">
+        <div class="no-dias-icon">📅</div>
+        <h3>No hay días bloqueados</h3>
+        <p>Agrega días específicos donde no se atenderá.</p>
+      </div>
+    </div>
+  </div>
+</div>

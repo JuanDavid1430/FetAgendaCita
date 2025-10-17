@@ -1,0 +1,172 @@
+<div class="servicios-container">
+  <div class="servicios-header">
+    <h1 class="servicios-title">💇‍♀️ Gestión de Servicios</h1>
+    <p class="servicios-subtitle">Administra los servicios que ofreces a tus clientes</p>
+  </div>
+
+  <!-- Botón de crear -->
+  <div class="actions-bar">
+    <button (click)="abrirModalCrear()" class="btn-crear">
+      ➕ Nuevo Servicio
+    </button>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Cargando servicios...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error && !loading" class="error-message">
+    <span class="error-icon">⚠️</span>
+    {{ error }}
+  </div>
+
+  <!-- Lista de Servicios -->
+  <div *ngIf="!loading && !error" class="servicios-content">
+    <div class="servicios-stats">
+      <span class="stat-item">
+        <strong>{{ servicios.length }}</strong> servicios registrados
+      </span>
+      <span class="stat-item">
+        <strong>{{ obtenerServiciosActivos() }}</strong> activos
+      </span>
+    </div>
+
+    <div class="servicios-grid">
+      <div *ngFor="let servicio of servicios" class="servicio-card">
+        <div class="servicio-header">
+          <div class="servicio-info">
+            <h3 class="servicio-nombre">{{ servicio.nombre }}</h3>
+            <p class="servicio-descripcion">{{ servicio.descripcion }}</p>
+          </div>
+          <div class="servicio-estado">
+            <span [class]="'estado-badge ' + obtenerClaseEstado(servicio.activo!)">
+              {{ obtenerIconoEstado(servicio.activo!) }} {{ servicio.activo ? 'Activo' : 'Inactivo' }}
+            </span>
+          </div>
+        </div>
+
+        <div class="servicio-details">
+          <div class="detail-item">
+            <span class="detail-label">⏱️ Duración:</span>
+            <span class="detail-value">{{ servicio.duracion }} minutos</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">💰 Precio:</span>
+            <span class="detail-value">${{ servicio.precio }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">📅 Creado:</span>
+            <span class="detail-value">{{ servicio.created_at | date:'dd/MM/yyyy' }}</span>
+          </div>
+        </div>
+
+        <div class="servicio-actions">
+          <button (click)="abrirModalEditar(servicio)" class="btn-editar">
+            ✏️ Editar
+          </button>
+          <button (click)="toggleActivo(servicio)" class="btn-toggle">
+            {{ servicio.activo ? '❌ Desactivar' : '✅ Activar' }}
+          </button>
+          <button (click)="eliminarServicio(servicio)" class="btn-eliminar">
+            🗑️ Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sin servicios -->
+    <div *ngIf="servicios.length === 0" class="no-servicios">
+      <div class="no-servicios-icon">💇‍♀️</div>
+      <h3>No hay servicios</h3>
+      <p>Crea tu primer servicio para comenzar a recibir reservas.</p>
+      <button (click)="abrirModalCrear()" class="btn-crear-primero">
+        ➕ Crear Primer Servicio
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div *ngIf="showModal" class="modal-overlay" (click)="cerrarModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{ isEditing ? '✏️ Editar Servicio' : '➕ Nuevo Servicio' }}</h2>
+        <button (click)="cerrarModal()" class="btn-cerrar">✕</button>
+      </div>
+
+      <form (ngSubmit)="onSubmit()" class="modal-form">
+        <div class="form-group">
+          <label for="nombre">Nombre del Servicio *</label>
+          <input 
+            type="text" 
+            id="nombre" 
+            [(ngModel)]="servicioForm.nombre" 
+            name="nombre"
+            class="form-control"
+            placeholder="Ej: Corte de Cabello"
+            required>
+        </div>
+
+        <div class="form-group">
+          <label for="descripcion">Descripción</label>
+          <textarea 
+            id="descripcion" 
+            [(ngModel)]="servicioForm.descripcion" 
+            name="descripcion"
+            class="form-control"
+            placeholder="Describe el servicio..."
+            rows="3"></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="duracion">Duración (minutos) *</label>
+            <input 
+              type="number" 
+              id="duracion" 
+              [(ngModel)]="servicioForm.duracion" 
+              name="duracion"
+              class="form-control"
+              min="15"
+              max="480"
+              required>
+          </div>
+
+          <div class="form-group">
+            <label for="precio">Precio ($)</label>
+            <input 
+              type="number" 
+              id="precio" 
+              [(ngModel)]="servicioForm.precio" 
+              name="precio"
+              class="form-control"
+              min="0"
+              step="0.01">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="checkbox-label">
+            <input 
+              type="checkbox" 
+              [(ngModel)]="servicioForm.activo" 
+              name="activo"
+              class="checkbox-input">
+            <span class="checkbox-text">Servicio activo (disponible para reservas)</span>
+          </label>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" (click)="cerrarModal()" class="btn-cancelar">
+            Cancelar
+          </button>
+          <button type="submit" class="btn-guardar">
+            {{ isEditing ? '💾 Actualizar' : '➕ Crear' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

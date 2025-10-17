@@ -12,7 +12,7 @@ export class ServicioService {
   constructor(private http: HttpClient) { }
 
   obtenerServicios(): Observable<Servicio[]> {
-    return this.http.get<Servicio[]>(this.apiUrl);
+    return this.http.get<Servicio[]>(`${this.apiUrl}/activos`);
   }
 
   listarActivos(): Observable<Servicio[]> {

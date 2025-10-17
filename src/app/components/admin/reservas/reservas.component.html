@@ -1,0 +1,146 @@
+<div class="reservas-container">
+  <div class="reservas-header">
+    <h1 class="reservas-title">📋 Gestión de Reservas</h1>
+    <p class="reservas-subtitle">Administra todas las citas y reservas del sistema</p>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filtros-section">
+    <h2 class="section-title">🔍 Filtros</h2>
+    <div class="filtros-grid">
+      <div class="filtro-group">
+        <label for="fecha">Fecha específica</label>
+        <input type="date" id="fecha" [(ngModel)]="filtroFecha" class="filtro-input">
+      </div>
+
+      <div class="filtro-group">
+        <label for="estado">Estado</label>
+        <select id="estado" [(ngModel)]="filtroEstado" class="filtro-input">
+          <option *ngFor="let estado of estados" [value]="estado.value">
+            {{ estado.label }}
+          </option>
+        </select>
+      </div>
+
+      <div class="filtro-group">
+        <label for="fecha-desde">Desde</label>
+        <input type="date" id="fecha-desde" [(ngModel)]="filtroFechaDesde" class="filtro-input">
+      </div>
+
+      <div class="filtro-group">
+        <label for="fecha-hasta">Hasta</label>
+        <input type="date" id="fecha-hasta" [(ngModel)]="filtroFechaHasta" class="filtro-input">
+      </div>
+
+      <div class="filtro-actions">
+        <button (click)="aplicarFiltros()" class="btn-filtrar">
+          🔍 Aplicar Filtros
+        </button>
+        <button (click)="limpiarFiltros()" class="btn-limpiar">
+          🗑️ Limpiar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Cargando reservas...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error && !loading" class="error-message">
+    <span class="error-icon">⚠️</span>
+    {{ error }}
+  </div>
+
+  <!-- Lista de Reservas -->
+  <div *ngIf="!loading && !error" class="reservas-content">
+    <div class="reservas-stats">
+      <span class="stat-item">
+        <strong>{{ reservasFiltradas.length }}</strong> reservas encontradas
+      </span>
+    </div>
+
+    <div class="reservas-list">
+      <div *ngFor="let reserva of reservasFiltradas" class="reserva-card">
+        <div class="reserva-header">
+          <div class="reserva-info">
+            <h3 class="reserva-cliente">{{ reserva.cliente_nombre }}</h3>
+            <p class="reserva-servicio">{{ reserva.servicio_nombre }}</p>
+          </div>
+          <div class="reserva-estado">
+            <span [class]="'estado-badge ' + obtenerClaseEstado(reserva.estado!)">
+              {{ obtenerIconoEstado(reserva.estado!) }} {{ reserva.estado | titlecase }}
+            </span>
+          </div>
+        </div>
+
+        <div class="reserva-details">
+          <div class="detail-item">
+            <span class="detail-label">📅 Fecha:</span>
+            <span class="detail-value">{{ formatearFecha(reserva.fecha) }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">🕐 Hora:</span>
+            <span class="detail-value">{{ formatearHora(reserva.hora_inicio) }} - {{ formatearHora(reserva.hora_fin!) }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">⏱️ Duración:</span>
+            <span class="detail-value">{{ reserva.duracion }} min</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">💰 Precio:</span>
+            <span class="detail-value">${{ reserva.precio }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">📧 Email:</span>
+            <span class="detail-value">{{ reserva.cliente_email }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">📞 Teléfono:</span>
+            <span class="detail-value">{{ reserva.cliente_telefono }}</span>
+          </div>
+          <div *ngIf="reserva.notas" class="detail-item">
+            <span class="detail-label">📝 Notas:</span>
+            <span class="detail-value">{{ reserva.notas }}</span>
+          </div>
+        </div>
+
+        <div class="reserva-actions">
+          <div class="action-group">
+            <label>Cambiar Estado:</label>
+            <div class="estado-buttons">
+              <button 
+                *ngIf="reserva.estado !== 'confirmada'"
+                (click)="cambiarEstado(reserva, 'confirmada')"
+                class="btn-estado btn-confirmar">
+                ✅ Confirmar
+              </button>
+              <button 
+                *ngIf="reserva.estado !== 'completada'"
+                (click)="cambiarEstado(reserva, 'completada')"
+                class="btn-estado btn-completar">
+                🎉 Completar
+              </button>
+              <button 
+                *ngIf="reserva.estado !== 'cancelada'"
+                (click)="cancelarReserva(reserva)"
+                class="btn-estado btn-cancelar">
+                ❌ Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sin reservas -->
+    <div *ngIf="reservasFiltradas.length === 0" class="no-reservas">
+      <div class="no-reservas-icon">📅</div>
+      <h3>No hay reservas</h3>
+      <p>No se encontraron reservas con los filtros aplicados.</p>
+    </div>
+  </div>
+</div>

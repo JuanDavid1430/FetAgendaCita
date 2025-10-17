@@ -28,7 +28,7 @@
 }
 
 .gradient-text {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #667eea;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -65,7 +65,7 @@
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #667eea;
   color: white;
   box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
 }
@@ -125,7 +125,7 @@
 /* Features Section */
 .features {
   padding: 6rem 2rem;
-  background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+  background: #f7fafc;
 }
 
 .section-title {
@@ -177,7 +177,7 @@
 
 /* CTA Section */
 .cta-section {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #667eea;
   padding: 6rem 2rem;
   text-align: center;
 }

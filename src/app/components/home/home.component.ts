@@ -12,7 +12,7 @@ import { RouterModule } from '@angular/router';
 export class HomeComponent {
   features = [
     {
-      icon: '�‍♀️',
+      icon: '💇‍♀️',
       title: 'Estilistas Profesionales',
       description: 'Personal capacitado con años de experiencia en tendencias actuales y técnicas especializadas'
     },
@@ -27,7 +27,7 @@ export class HomeComponent {
       description: 'Usamos solo productos de las mejores marcas para cuidar y embellecer tu cabello'
     },
     {
-      icon: '�‍♀️',
+      icon: '💇‍♀️ 💆‍♂️',
       title: 'Ambiente Relajante',
       description: 'Disfruta de un espacio cómodo y moderno mientras te consientes y renuevas tu estilo'
     }

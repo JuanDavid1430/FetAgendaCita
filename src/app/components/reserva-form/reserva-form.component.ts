@@ -137,15 +137,17 @@ export class ReservaFormComponent implements OnInit {
     
     const reservaData = {
       servicio_id: parseInt(this.reservaForm.value.servicio_id),
-      fecha_hora: `${this.reservaForm.value.fecha} ${this.reservaForm.value.hora}`,
-      nombre_cliente: this.reservaForm.value.nombre_cliente,
-      email_cliente: this.reservaForm.value.email_cliente,
-      telefono_cliente: this.reservaForm.value.telefono_cliente,
-      comentarios: this.reservaForm.value.comentarios || null
+      fecha: this.reservaForm.value.fecha,
+      hora_inicio: this.reservaForm.value.hora,
+      nombre: this.reservaForm.value.nombre_cliente,
+      email: this.reservaForm.value.email_cliente,
+      telefono: this.reservaForm.value.telefono_cliente,
+      notas: this.reservaForm.value.comentarios || null
     };
 
     this.reservaService.crearReserva(reservaData).subscribe({
       next: (response) => {
+        console.log('Reserva creada exitosamente:', response);
         this.success = true;
         this.loading = false;
         
@@ -156,7 +158,19 @@ export class ReservaFormComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error al crear reserva:', err);
-        this.error = err.error?.message || 'Error al crear la reserva';
+        console.error('Datos enviados:', reservaData);
+        
+        // Manejar diferentes tipos de errores
+        if (err.error?.error) {
+          this.error = err.error.error;
+        } else if (err.error?.message) {
+          this.error = err.error.message;
+        } else if (err.message) {
+          this.error = err.message;
+        } else {
+          this.error = 'Error al crear la reserva. Por favor, intenta nuevamente.';
+        }
+        
         this.loading = false;
       }
     });
